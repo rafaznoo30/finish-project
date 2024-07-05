@@ -1,0 +1,56 @@
+/*
+    primary: #90a955
+    secundary: #ecf39e;
+    ligth: #4f772d
+    Strong : #31572c
+*/
+
+header nav{
+    background-color: #90a955;
+}
+
+/* Backgrounds */
+.bg-title{
+    background-color: #87CEEB;
+}
+
+.bg-bone{
+    background-color: #F5F5DC;
+}
+
+.bg-blue-sky{
+    background-color: #50C878;
+}
+
+.bg-body-according{
+    background-color: #6bc78a;
+}
+
+.bg-img{
+    background-color: #f7dcb9;
+}
+/* Fin backgrounds */
+
+.accordion-button-personalized{
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    background-color: #F5F5DC;
+    border: 0;
+    border-radius: 0;
+    overflow-anchor: none;
+}
+
+.accordion-button-personalized:focus{
+    z-index: 3;
+    border-color: #F5F5DC;
+    text-decoration: underline;
+    font-weight: bolder;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem #f5f5dc9c;
+}
