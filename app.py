@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 import pandas as pd
 import matplotlib.pyplot as plt
-import forms
 
 plt.switch_backend('Agg')
 app = Flask(__name__)
@@ -34,15 +33,65 @@ def dfDB(departamento, apartado):
 
         else:
 
-            print('PLantas')
+            invEspecies = pd.read_csv('Data/Boyaca/plantasInvasoresEspeciesBoyaca.csv',
+                                      usecols=['label_region', 'especies_invasoras'])
+            invRegistros = pd.read_csv('Data/Boyaca/plantasInvasoresRegistrosBoyaca.csv',
+                                       usecols=['registros_invasoras'])
+            endObservaciones = pd.read_csv('Data/Boyaca/plantasEndemicasObservacionesBoyaca.csv',
+                                           usecols=['count']).rename(
+                columns={'count': 'registros_endemicas'})
+            endEspecies = pd.read_csv('Data/Boyaca/plantasEndemicasEspeciesBoyaca.csv', usecols=['count']).rename(
+                columns={'count': 'especies_endemicas'})
+            exoEspecies = pd.read_csv('Data/Boyaca/plantasExoticasEspeciesBoyaca.csv', usecols=['especies_exoticas'])
+            exoObservaciones = pd.read_csv('Data/Boyaca/plantasExoticasObservacionesBoyaca.csv',
+                                           usecols=['registros_exoticas'])
+
+            df = pd.concat([invEspecies, invRegistros, endEspecies, endObservaciones, exoEspecies, exoObservaciones],
+                           axis=1)
 
     elif departamento == 'Cundinamarca':
 
         print('Hola mundo')
         if apartado == 'Animales':
-            print('cundinamarca animales')
+
+            invEspecies = pd.read_csv('Data/Cundinamarca/animalesInvasoresEspeciesCundinamarca.csv',
+                                      usecols=['label_region', 'especies_invasoras'])
+            invRegistros = pd.read_csv('Data/Cundinamarca/animalesInvasoresRegistrosCundinamarca.csv',
+                                       usecols=['registros_invasoras'])
+            # rename(columns) ---> Cambia el nombre de la columna
+            endEspecies = pd.read_csv('Data/Cundinamarca/animalesEndemicasEspeciesCundinamarca.csv', usecols=['count']).rename(
+                columns={'count': 'especies_endemicas'})
+            endObservaciones = pd.read_csv('Data/Cundinamarca/animalesEndemicasObservacionesCundinamarca.csv',
+                                           usecols=['count']).rename(
+                columns={'count': 'registros_endemicas'})
+            exoEspecies = pd.read_csv('Data/Cundinamarca/animalesExoticasEspeciesCundinamarca.csv', usecols=['especies_exoticas'])
+            exoObservaciones = pd.read_csv('Data/Cundinamarca/animalesExoticasObservacionesCundinamarca.csv',
+                                           usecols=['registros_exoticas'])
+
+
+            df = pd.concat([invEspecies, invRegistros, endEspecies, endObservaciones, exoEspecies, exoObservaciones],
+                           axis=1)
+
         else:
-            print('cundinamarca plantas')
+
+            invEspecies = pd.read_csv('Data/Cundinamarca/plantasInvasoresEspeciesCundinamarca.csv',
+                                      usecols=['label_region', 'especies_invasoras'])
+            invRegistros = pd.read_csv('Data/Cundinamarca/plantasInvasoresRegistrosCundinamarca.csv',
+                                       usecols=['registros_invasoras'])
+            # rename(columns) ---> Cambia el nombre de la columna
+            endEspecies = pd.read_csv('Data/Cundinamarca/plantasEndemicasEspeciesCundinamarca.csv',
+                                      usecols=['count']).rename(
+                columns={'count': 'especies_endemicas'})
+            endObservaciones = pd.read_csv('Data/Cundinamarca/plantasEndemicasObservacionesCundinamarca.csv',
+                                           usecols=['count']).rename(
+                columns={'count': 'registros_endemicas'})
+            exoEspecies = pd.read_csv('Data/Cundinamarca/plantasExoticasEspeciesCundinamarca.csv',
+                                      usecols=['especies_exoticas'])
+            exoObservaciones = pd.read_csv('Data/Cundinamarca/plantasExoticasObservacionesCundinamarca.csv',
+                                           usecols=['registros_exoticas'])
+
+            df = pd.concat([invEspecies, invRegistros, endEspecies, endObservaciones, exoEspecies, exoObservaciones],
+                           axis=1)
 
     return df
 
@@ -50,27 +99,29 @@ def dfDB(departamento, apartado):
 def municipiosDB():
     municipiosBoyaca = pd.read_csv('Data/Boyaca/animalesInvasoresEspeciesBoyaca.csv',
                                    usecols=['label_region'])
-
+    municipiosCundinamarca =  pd.read_csv('Data/Cundinamarca/animalesInvasoresEspeciesCundinamarca.csv',
+                                      usecols=['label_region'])
     # Falta municipios de Cundinamarca
-    return municipiosBoyaca['label_region'].tolist()
+    return municipiosBoyaca['label_region'].tolist(), municipiosCundinamarca['label_region'].tolist()
 
 
 @app.route('/')
 def test():
-    municipiosBoyaca = municipiosDB()
+    municipiosBoyaca , municipiosCundinamarca= municipiosDB()
 
-    return render_template('index.html', municipiosBoyaca=municipiosBoyaca)
+    return render_template('index.html', municipiosBoyaca=municipiosBoyaca, municipiosCundinamarca=municipiosCundinamarca)
 
 
-@app.route('/dataBoyaca', methods=['POST'])
+@app.route('/dbGraph', methods=['POST'])
 def dataBoyaca():
     data = request.get_json()
     departamento = data['departamento']
     municipio = data['municipio']
     apartado = data['apartado']
 
+    print(municipio)
     datos = dfDB(departamento, apartado)
-
+    print(datos.head())
     # Filtrar por el municipio de interés (en este caso, 'Almeida')
     datos = datos[datos['label_region'] == municipio]
 
@@ -91,12 +142,12 @@ def dataBoyaca():
     # Etiquetas y título
     ax.set_xlabel('Tipo de Especies')
     ax.set_ylabel('Cantidad')
-    ax.set_title(f'Distribución de Especies y Registros en {municipio}')
+    ax.set_title(f'Distribución de Especies y Registros de {apartado} en {municipio}')
     ax.set_xticks([i + bar_width / 2 for i in index])
     ax.set_xticklabels(['Invasoras', 'Endémicas', 'Exóticas'])
     ax.legend()
 
-    grafica = 'static/img/grafica.png'
+    grafica = f'static/img/grafica-{departamento}.png'
     plt.savefig(grafica)
     plt.close()
 

@@ -29,6 +29,11 @@ header nav{
 .bg-img{
     background-color: #f7dcb9;
 }
+
+
+.bg-validate{
+    background-color: rgba(255, 193, 7, 0.48);
+}
 /* Fin backgrounds */
 
 .accordion-button-personalized{
@@ -54,3 +59,9 @@ header nav{
     outline: 0;
     box-shadow: 0 0 0 .25rem #f5f5dc9c;
 }
+
+.hide-element{
+    display: none;
+}
+
+
