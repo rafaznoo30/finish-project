@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const apartado = document.getElementById('apartado-cundinamarca').value;
         const municipio = document.getElementById('municipios-cundinamarca').value;
-        
+
         let elementValidate = document.getElementById('elementValidateCundinamarca');
         if (apartado === 'Seleccione una opción' || municipio === 'Seleccione una opción') {
             elementValidate.classList.remove('hide-element');

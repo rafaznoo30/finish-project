@@ -51,7 +51,6 @@ def dfDB(departamento, apartado):
 
     elif departamento == 'Cundinamarca':
 
-        print('Hola mundo')
         if apartado == 'Animales':
 
             invEspecies = pd.read_csv('Data/Cundinamarca/animalesInvasoresEspeciesCundinamarca.csv',
@@ -118,10 +117,7 @@ def dataBoyaca():
     departamento = data['departamento']
     municipio = data['municipio']
     apartado = data['apartado']
-
-    print(municipio)
     datos = dfDB(departamento, apartado)
-    print(datos.head())
     # Filtrar por el municipio de interés (en este caso, 'Almeida')
     datos = datos[datos['label_region'] == municipio]
 
